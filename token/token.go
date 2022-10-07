@@ -28,3 +28,16 @@ const (
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
 )
+
+var keywords = map[string]Type{
+	"fn":  FUNCTION,
+	"let": LET,
+}
+
+func GetIdentifierToken(identifier string) Type {
+	if t, ok := keywords[identifier]; ok {
+		return t
+	}
+
+	return IDENTIFIER
+}

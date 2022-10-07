@@ -1,5 +1,0 @@
-package lango
-
-func main() {
-
-}
