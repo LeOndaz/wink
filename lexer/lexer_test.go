@@ -14,6 +14,9 @@ func TestNextToken(t *testing.T) {
 				x + y;
 			}
 			let result = add(two, sixteen);
+
+			5 < 10 <= 20 / 2;
+			let six = 6 != (5 * 2);
 `
 
 	tests := []struct {
@@ -61,13 +64,35 @@ func TestNextToken(t *testing.T) {
 		{expectedType: token.IDENTIFIER, expectedLiteral: "sixteen"},
 		{expectedType: token.RPAREN, expectedLiteral: ")"},
 		{expectedType: token.SEMICOLON, expectedLiteral: ";"},
+
+		{expectedType: token.INT, expectedLiteral: "5"},
+		{expectedType: token.LT, expectedLiteral: "<"},
+		{expectedType: token.INT, expectedLiteral: "10"},
+		{expectedType: token.LT, expectedLiteral: "<"},
+		{expectedType: token.ASSIGN, expectedLiteral: "="},
+		{expectedType: token.INT, expectedLiteral: "20"},
+		{expectedType: token.FSLASH, expectedLiteral: "/"},
+		{expectedType: token.INT, expectedLiteral: "2"},
+		{expectedType: token.SEMICOLON, expectedLiteral: ";"},
+
+		{expectedType: token.LET, expectedLiteral: "let"},
+		{expectedType: token.IDENTIFIER, expectedLiteral: "six"},
+		{expectedType: token.ASSIGN, expectedLiteral: "="},
+		{expectedType: token.INT, expectedLiteral: "6"},
+		{expectedType: token.EXCLAMATION, expectedLiteral: "!"},
+		{expectedType: token.ASSIGN, expectedLiteral: "="},
+		{expectedType: token.LPAREN, expectedLiteral: "("},
+		{expectedType: token.INT, expectedLiteral: "5"},
+		{expectedType: token.ASTERISK, expectedLiteral: "*"},
+		{expectedType: token.INT, expectedLiteral: "2"},
+		{expectedType: token.RPAREN, expectedLiteral: ")"},
+		{expectedType: token.SEMICOLON, expectedLiteral: ";"},
 	}
 
 	lexer := New(input)
 
 	for i, tc := range tests {
 		currentToken := lexer.NextToken()
-		t.Log(currentToken.Literal)
 
 		// wrong type
 		if currentToken.Type != tc.expectedType {

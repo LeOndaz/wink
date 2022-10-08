@@ -41,26 +41,57 @@ func (lexer *Lexer) readChar() {
 
 func (lexer *Lexer) NextToken() token.Token {
 	var t token.Token
-
 	lexer.skipWhitespace()
+
+	var currentChar = string(lexer.ch)
 
 	switch lexer.ch {
 	case '+':
-		t = newToken(token.PLUS, lexer.ch)
+		t = newToken(token.PLUS, currentChar)
+	case '-':
+		t = newToken(token.MINUS, currentChar)
 	case '=':
-		t = newToken(token.ASSIGN, lexer.ch)
+		if lexer.peakChar() == '=' {
+			lexer.readChar()
+			t = newToken(token.EQ, currentChar+string(lexer.ch))
+		} else {
+			t = newToken(token.ASSIGN, currentChar)
+		}
 	case ';':
-		t = newToken(token.SEMICOLON, lexer.ch)
+		t = newToken(token.SEMICOLON, currentChar)
 	case '(':
-		t = newToken(token.LPAREN, lexer.ch)
+		t = newToken(token.LPAREN, currentChar)
 	case ')':
-		t = newToken(token.RPAREN, lexer.ch)
+		t = newToken(token.RPAREN, currentChar)
 	case '{':
-		t = newToken(token.LBRACE, lexer.ch)
+		t = newToken(token.LBRACE, currentChar)
 	case '}':
-		t = newToken(token.RBRACE, lexer.ch)
+		t = newToken(token.RBRACE, currentChar)
 	case ',':
-		t = newToken(token.COMMA, lexer.ch)
+		t = newToken(token.COMMA, currentChar)
+	case '*':
+		t = newToken(token.ASTERISK, currentChar)
+	case '!':
+		if lexer.peakChar() == '=' {
+			lexer.readChar()
+			t = newToken(token.NE, currentChar+string(lexer.ch))
+		} else {
+			t = newToken(token.EXCLAMATION, currentChar)
+		}
+	case '<':
+		if lexer.peakChar() == '=' {
+			lexer.readChar()
+			t = newToken(token.LTE, currentChar+string(lexer.ch))
+		} else {
+			return newToken(token.LT, currentChar)
+		}
+	case '>':
+		if lexer.peakChar() == '=' {
+			lexer.readChar()
+			t = newToken(token.GTE, currentChar+string(lexer.ch))
+		} else {
+			return newToken(token.GT, currentChar)
+		}
 	case 0:
 		t.Literal = ""
 		t.Type = token.EOF
@@ -74,7 +105,7 @@ func (lexer *Lexer) NextToken() token.Token {
 			t.Literal = lexer.readDigit()
 			return t // early exit again
 		} else {
-			t = newToken(token.ILLEGAL, lexer.ch) // not a digit, not a string, wtf is it?
+			t = newToken(token.ILLEGAL, currentChar) // not a digit, not a string, wtf is it?
 		}
 	}
 
@@ -82,8 +113,8 @@ func (lexer *Lexer) NextToken() token.Token {
 	return t
 }
 
-func newToken(tokenType token.Type, ch byte) token.Token {
-	return token.Token{Type: tokenType, Literal: string(ch)}
+func newToken(tokenType token.Type, literal string) token.Token {
+	return token.Token{Type: tokenType, Literal: literal}
 }
 
 func (lexer *Lexer) readIdentifier() string {
@@ -112,4 +143,8 @@ func isLetter(ch byte) bool {
 
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
+}
+
+func (lexer *Lexer) peakChar() uint8 {
+	return lexer.input[lexer.readPosition]
 }

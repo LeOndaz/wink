@@ -14,8 +14,10 @@ const (
 	IDENTIFIER = "IDENTIFIER" // add, foo, x, y
 	INT        = "INT"        // 12312
 
-	ASSIGN = "="
-	PLUS   = "+"
+	ASSIGN      = "="
+	PLUS        = "+"
+	MINUS       = "-"
+	EXCLAMATION = "!"
 
 	COMMA     = ","
 	SEMICOLON = ";"
@@ -23,15 +25,38 @@ const (
 	LPAREN = "("
 	RPAREN = ")"
 
-	LBRACE   = "{"
-	RBRACE   = "}"
+	LBRACE = "{"
+	RBRACE = "}"
+
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
+	RETURN   = "RETURN"
+	IF       = "IF"
+	ELSE     = "ELSE"
+	TRUE     = "TRUE"
+	FALSE    = "FALSE"
+	FOR      = "FOR"
+
+	GT  = ">"
+	LT  = "<"
+	EQ  = "=="
+	NE  = "!="
+	GTE = ">="
+	LTE = "<="
+
+	FSLASH   = "/"
+	ASTERISK = "*"
 )
 
 var keywords = map[string]Type{
-	"fn":  FUNCTION,
-	"let": LET,
+	"fn":     FUNCTION,
+	"let":    LET,
+	"return": RETURN,
+	"if":     IF,
+	"else":   ELSE,
+	"true":   TRUE,
+	"false":  FALSE,
+	"for":    FOR,
 }
 
 func GetIdentifierToken(identifier string) Type {
